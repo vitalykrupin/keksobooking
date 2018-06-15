@@ -43,6 +43,14 @@ var makeRandomInt = function (min, max) {
   return Math.floor(min + Math.random() * (max + 1 - min));
 };
 
+var copyArr = function (arr) {
+  var photos = [];
+  for (var i = 0; i < arr.length; i++) {
+    photos[i] = arr[i];
+  }
+  return photos;
+};
+
 var createArrOffers = function () {
   var arrOffers = [];
   for (var i = 0; i < NUMBER_OF_CARDS; i++) {
@@ -50,12 +58,26 @@ var createArrOffers = function () {
       author: {
         avatar: 'img/avatars/user' + addZero(i + 1) + '.png'
       },
-      offer: {
-
-      },
       location: {
-
+        x: makeRandomInt(LOCATION_COORDINATES.xMin, LOCATION_COORDINATES.xMax),
+        y: makeRandomInt(LOCATION_COORDINATES.yMin, LOCATION_COORDINATES.yMax)
+      },
+      offer: {
+        title: OFFER_TITLE[makeRandomInt(0, OFFER_TITLE.length - 1)],
+        address: location.x + ', ' + location.y,
+        price: makeRandomInt(PRICE_MIN, PRICE_MAX),
+        type: OFFER_TYPE[makeRandomInt(0, OFFER_TYPE.length - 1)],
+        rooms: makeRandomInt(ROOMS_MIN, ROOMS_MAX),
+        guests: makeRandomInt(GUESTS_MIN, GUESTS_MAX),
+        checkin: OFFER_CHECKIN[makeRandomInt(0, OFFER_CHECKIN.length - 1)],
+        checkout: OFFER_CHECKOUT[makeRandomInt(0, OFFER_CHECKOUT.length - 1)],
+        features: OFFER_FEATURES.slice(0, makeRandomInt(0, OFFER_FEATURES.length - 1)),
+        description: '',
+        photos: copyArr(OFFER_PHOTOS.sort(function (a, b) {
+          return Math.random() - 0.5;
+        }))
       }
     });
-  };
+  }
+  return arrOffers;
 };
