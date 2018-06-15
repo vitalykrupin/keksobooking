@@ -32,3 +32,30 @@ var LOCATION_COORDINATES = {
   yMin: 130,
   yMax: 630
 };
+
+document.querySelector('.map').classList.remove('map--faded');
+
+var addZero = function (num) {
+  return num >= 10 ? num : '0' + num;
+};
+
+var makeRandomInt = function (min, max) {
+  return Math.floor(min + Math.random() * (max + 1 - min));
+};
+
+var createArrOffers = function () {
+  var arrOffers = [];
+  for (var i = 0; i < NUMBER_OF_CARDS; i++) {
+    arrOffers.push({
+      author: {
+        avatar: 'img/avatars/user' + addZero(i + 1) + '.png'
+      },
+      offer: {
+
+      },
+      location: {
+
+      }
+    });
+  };
+};
