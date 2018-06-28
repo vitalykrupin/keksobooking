@@ -353,23 +353,6 @@ selectTimeout.addEventListener('change', function () {
   changeSelectTimein();
 });
 
-// var changeSelectCapacity = function () {
-//   for (var i = 0; i < selectCapacity.length; i++) {
-//     selectCapacity[i].disabled = true;
-//     if (selectRooms.value === '100' && selectCapacity[i].value === '0') {
-//       selectCapacity[i].selected = true;
-//       selectCapacity[i].disabled = false;
-//     } else if (selectRooms.value !== '100' && selectCapacity[i].value !== '0' && selectCapacity[i].value <= selectRooms.value) {
-//       selectCapacity[i].selected = true;
-//       selectCapacity[i].disabled = false;
-//     }
-//   }
-// };
-
-// selectRooms.addEventListener('change', function () {
-//   changeSelectCapacity();
-// });
-
 var selectRooms = adForm.querySelector('select[name=rooms]');
 var selectCapacity = adForm.querySelector('select[name=capacity]');
 
@@ -392,12 +375,13 @@ var roomMap = {
   }
 };
 
-roomMap[selectRooms.value].optionStates.forEach(function (item, i) {
-  selectCapacity[i].disabled = item;
+var changeSelectCapacity = function () {
+  roomMap[selectRooms.value].optionStates.forEach(function (item, i) {
+    selectCapacity[i].disabled = item;
+  });
+  selectCapacity[roomMap[selectRooms.value].selectItem].selected = true;
+};
+
+selectRooms.addEventListener('change', function () {
+  changeSelectCapacity();
 });
-
-selectCapacity[roomMap[selectRooms.value].selectItem].selected = true;
-
-// selectRooms.addEventListener('change', function () {
-//   changeSelectCapacity();
-// });
