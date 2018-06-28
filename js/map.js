@@ -353,22 +353,51 @@ selectTimeout.addEventListener('change', function () {
   changeSelectTimein();
 });
 
+// var changeSelectCapacity = function () {
+//   for (var i = 0; i < selectCapacity.length; i++) {
+//     selectCapacity[i].disabled = true;
+//     if (selectRooms.value === '100' && selectCapacity[i].value === '0') {
+//       selectCapacity[i].selected = true;
+//       selectCapacity[i].disabled = false;
+//     } else if (selectRooms.value !== '100' && selectCapacity[i].value !== '0' && selectCapacity[i].value <= selectRooms.value) {
+//       selectCapacity[i].selected = true;
+//       selectCapacity[i].disabled = false;
+//     }
+//   }
+// };
+
+// selectRooms.addEventListener('change', function () {
+//   changeSelectCapacity();
+// });
+
 var selectRooms = adForm.querySelector('select[name=rooms]');
 var selectCapacity = adForm.querySelector('select[name=capacity]');
 
-var changeSelectCapacity = function () {
-  for (var i = 0; i < selectCapacity.length; i++) {
-    selectCapacity[i].disabled = true;
-    if (selectRooms.value === '100' && selectCapacity[i].value === '0') {
-      selectCapacity[i].selected = true;
-      selectCapacity[i].disabled = false;
-    } else if (selectRooms.value !== '100' && selectCapacity[i].value !== '0' && selectCapacity[i].value <= selectRooms.value) {
-      selectCapacity[i].selected = true;
-      selectCapacity[i].disabled = false;
-    }
+var roomMap = {
+  1: {
+    optionStates: [true, true, false, true],
+    selectItem: 2
+  },
+  2: {
+    optionStates: [true, false, false, true],
+    selectItem: 1
+  },
+  3: {
+    optionStates: [false, false, false, true],
+    selectItem: 0
+  },
+  100: {
+    optionStates: [true, true, true, false],
+    selectItem: 3
   }
 };
 
-selectRooms.addEventListener('change', function () {
-  changeSelectCapacity();
+roomMap[selectRooms.value].optionStates.forEach(function (item, i) {
+  selectCapacity[i].disabled = item;
 });
+
+selectCapacity[roomMap[selectRooms.value].selectItem].selected = true;
+
+// selectRooms.addEventListener('change', function () {
+//   changeSelectCapacity();
+// });
