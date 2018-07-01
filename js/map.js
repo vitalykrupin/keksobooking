@@ -39,10 +39,10 @@ var GUESTS_MIN = 1;
 var GUESTS_MAX = 10;
 var NUMBER_OF_CARDS = 8;
 var LOCATION_COORDINATES = {
-  xMin: 300,
-  xMax: 900,
+  xMin: 0,
+  xMax: 1200,
   yMin: 130,
-  yMax: 630
+  yMax: 500
 };
 var dictionary = {
   palace: {
