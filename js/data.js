@@ -27,46 +27,44 @@
   var GUESTS_MIN = 1;
   var GUESTS_MAX = 10;
   var NUMBER_OF_CARDS = 8;
-  window.LOCATION_COORDINATES = {
-    xMin: 0,
-    xMax: 1200,
-    yMin: 130,
-    yMax: 500
-  };
+
+  var locationsCoords = window.constants.LOCATION_COORDINATES;
+  var randomInt = window.utils.makeRandomInt;
+  var randomArrItem = window.utils.chooseRandArrItem;
 
   var createArrOffers = function () {
     var arr = [];
     for (var i = 0; i < NUMBER_OF_CARDS; i++) {
       var location = {
-        x: window.utils.makeRandomInt(LOCATION_COORDINATES.xMin, LOCATION_COORDINATES.xMax),
-        y: window.utils.makeRandomInt(LOCATION_COORDINATES.yMin, LOCATION_COORDINATES.yMax)
+        x: randomInt(locationsCoords.xMin, locationsCoords.xMax),
+        y: randomInt(locationsCoords.yMin, locationsCoords.yMax)
       };
       arr.push({
         author: {
           avatar: 'img/avatars/user' + window.utils.addZero(i + 1) + '.png'
         },
         offer: {
-          title: window.utils.chooseRandArrItem(OFFER_TITLE),
+          title: randomArrItem(OFFER_TITLE),
           address: location.x + ', ' + location.y,
-          price: window.utils.makeRandomInt(PRICE_MIN, PRICE_MAX),
-          type: window.utils.chooseRandArrItem(OFFER_TYPE),
-          rooms: window.utils.makeRandomInt(ROOMS_MIN, ROOMS_MAX),
-          guests: window.utils.makeRandomInt(GUESTS_MIN, GUESTS_MAX),
-          checkin: window.utils.chooseRandArrItem(OFFER_CHECKIN),
-          checkout: window.utils.chooseRandArrItem(OFFER_CHECKOUT),
-          features: OFFER_FEATURES.slice(0, window.utils.makeRandomInt(0, OFFER_FEATURES.length - 1)),
+          price: randomInt(PRICE_MIN, PRICE_MAX),
+          type: randomArrItem(OFFER_TYPE),
+          rooms: randomInt(ROOMS_MIN, ROOMS_MAX),
+          guests: randomInt(GUESTS_MIN, GUESTS_MAX),
+          checkin: randomArrItem(OFFER_CHECKIN),
+          checkout: randomArrItem(OFFER_CHECKOUT),
+          features: OFFER_FEATURES.slice(0, randomInt(0, OFFER_FEATURES.length - 1)),
           description: '',
           photos: window.utils.copyArr(OFFER_PHOTOS.sort(function () {
             return Math.random() - 0.5;
           }))
         },
-        location: {
-          x: location.x,
-          y: location.y
-        }
+        location: location
       });
     }
     return arr;
   };
-  window.OFFERS = createArrOffers();
+
+  window.data = {
+    OFFERS: createArrOffers()
+  };
 })();

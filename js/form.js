@@ -1,37 +1,23 @@
 'use strict';
 
 (function () {
+  var pinProportions = window.constants.PIN_PROPORTIONS;
+  var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
   var inputAddress = document.querySelector('input[name=address]');
-  var setAddressValues = function () {
-    var coordinatePinX = mapPinMain.offsetLeft + PIN_PROPORTIONS.mainPinWidth / 2;
+
+  window.setAddressValues = function () {
+    var coordinatePinX = mapPinMain.offsetLeft + pinProportions.mainPinWidth / 2;
     var coordinatePinY = mapPinMain.offsetTop;
     if (map.classList.contains('map--faded')) {
-      coordinatePinY += PIN_PROPORTIONS.mainPinHeight / 2;
+      coordinatePinY += pinProportions.mainPinHeight / 2;
     } else {
-      coordinatePinY += PIN_PROPORTIONS.mainPinHeight + PIN_PROPORTIONS.pointerHeight;
+      coordinatePinY += pinProportions.mainPinHeight + pinProportions.pointerHeight;
     }
     inputAddress.value = Math.floor(coordinatePinX) + ', ' + Math.floor(coordinatePinY);
   };
 
-  setAddressValues();
-
-  mapPinMain.addEventListener('mousedown', activatePage);
-
-  var mapPins = map.querySelector('.map__pins');
-  mapPins.addEventListener('click', function (evt) {
-    var button = evt.target;
-    while (button && button.tagName.toLowerCase() !== 'button') {
-      button = evt.target.parentNode;
-    }
-    if (!button) {
-      return;
-    }
-    if (typeof button.dataset.index === 'undefined') {
-      return;
-    }
-    map.insertBefore(renderCard(OFFERS[button.dataset.index]), map.children[1]);
-  });
+  window.setAddressValues();
 
   var adForm = document.querySelector('.ad-form');
   var inputTitle = adForm.querySelector('input[name=title]');
@@ -48,9 +34,10 @@
     }
   });
 
+  var TITLE_LENGTH_MAX = 30;
   inputTitle.addEventListener('input', function (evt) {
     var target = evt.target;
-    if (target.value.length < 30) {
+    if (target.value.length < TITLE_LENGTH_MAX) {
       target.setCustomValidity('Заголовок должен состоять минимум из 30-ти символов');
     } else {
       target.setCustomValidity('');
@@ -59,6 +46,8 @@
 
   var selectType = adForm.querySelector('select[name=type]');
   var inputPrice = adForm.querySelector('input[name=price]');
+  var dictionary = window.constants.DICTIONARY;
+
   var changeInputPrice = function () {
     inputPrice.setAttribute('min', dictionary[selectType.value].minPrice);
     inputPrice.placeholder = dictionary[selectType.value].minPrice;
@@ -94,28 +83,16 @@
   var selectTimein = adForm.querySelector('select[name=timein]');
   var selectTimeout = adForm.querySelector('select[name=timeout]');
 
-  var changeSelectTimein = function () {
-    for (var i = 0; i < selectTimein.length; i++) {
-      if (selectTimein[i].value === selectTimeout.value) {
-        selectTimein[i].selected = true;
-      }
-    }
-  };
-
-  var changeSelectTimeout = function () {
-    for (var i = 0; i < selectTimeout.length; i++) {
-      if (selectTimeout[i].value === selectTimein.value) {
-        selectTimeout[i].selected = true;
-      }
-    }
+  var changeSelection = function (arr1, arr2) {
+    arr1.value = arr2.value;
   };
 
   selectTimein.addEventListener('change', function () {
-    changeSelectTimeout();
+    changeSelection(selectTimeout, selectTimein);
   });
 
   selectTimeout.addEventListener('change', function () {
-    changeSelectTimein();
+    changeSelection(selectTimein, selectTimeout);
   });
 
   var selectRooms = adForm.querySelector('select[name=rooms]');
