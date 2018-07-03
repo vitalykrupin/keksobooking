@@ -31,8 +31,8 @@
         fieldset[i].disabled = true;
       }
       window.card.closePopup(); // to make this method
-      window.pin.removePins(); // to make this method
-      window.pin.returnMainPin(); // to make this method
+      window.pin.removePins();
+      window.pin.returnMainPin();
     }
   };
 })();
