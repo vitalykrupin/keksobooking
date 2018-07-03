@@ -134,7 +134,7 @@
   };
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.upload(new FormData(adForm), function (response) {
+    window.backend.request('https://js.dump.academy/keksobooking', 'POST', function () {
       resetAdForm();
     }, function (response) {
       var errorMassage = document.createElement('div');
@@ -142,7 +142,7 @@
       errorMassage.style.fontSize = '16px';
       errorMassage.textContent = response + '. Попробуйте отправить форму еще раз.';
       adForm.insertAdjacentElement('beforeend', errorMassage);
-    });
+    }, new FormData(adForm));
     evt.preventDefault();
   });
 })();

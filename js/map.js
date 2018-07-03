@@ -7,7 +7,7 @@
   // var resetButton = adForm.querySelector('.ad-form__reset');
 
   // resetButton.addEventListener('click', window.page.deactivate);
-  window.backend.load(function (response) {
+  window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
     window.data = {
       OFFERS: response
     };
