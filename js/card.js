@@ -63,6 +63,9 @@
       });
 
       return cardElement;
+    },
+    deleteCard: function () {
+      closePopup();
     }
   };
 })();

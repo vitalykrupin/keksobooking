@@ -40,6 +40,12 @@
         fragment.appendChild(renderPin(arr[i], i));
       }
       pinList.appendChild(fragment);
+    },
+    deleteFragmentPins: function () {
+      var pinsArr = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      for (var i = 0; i < pinsArr.length; i++) {
+        pinsArr[i].remove();
+      }
     }
   };
 })();

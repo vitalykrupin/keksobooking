@@ -6,7 +6,7 @@
       xMin: 50,
       xMax: 1150,
       yMin: 130,
-      yMax: 500
+      yMax: 488
     },
     PIN_PROPORTIONS: {
       width: 50,
