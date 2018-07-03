@@ -127,4 +127,22 @@
   selectRooms.addEventListener('change', function () {
     changeSelectCapacity();
   });
+
+  var resetAdForm = function () {
+    adForm.reset();
+    window.setAddressValues();
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.request('https://js.dump.academy/keksobooking', 'POST', function () {
+      resetAdForm();
+    }, function (response) {
+      var errorMassage = document.createElement('div');
+      errorMassage.style = 'margin: 0 auto; text-align: center; color: red;';
+      errorMassage.style.fontSize = '16px';
+      errorMassage.textContent = response + '. Попробуйте отправить форму еще раз.';
+      adForm.insertAdjacentElement('beforeend', errorMassage);
+    }, new FormData(adForm));
+    evt.preventDefault();
+  });
 })();

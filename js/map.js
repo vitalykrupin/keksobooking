@@ -3,25 +3,30 @@
 (function () {
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
-  var adForm = document.querySelector('.ad-form');
-  var resetButton = adForm.querySelector('.ad-form__reset');
+  // var adForm = document.querySelector('.ad-form');
+  // var resetButton = adForm.querySelector('.ad-form__reset');
 
-  mapPinMain.addEventListener('mousedown', window.page.activate);
-  resetButton.addEventListener('click', window.page.deactivate);
+  // resetButton.addEventListener('click', window.page.deactivate);
+  window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
+    window.data = {
+      OFFERS: response
+    };
+    mapPinMain.addEventListener('mousedown', window.page.activate);
+  });
 
   var mapPins = map.querySelector('.map__pins');
   mapPins.addEventListener('click', function (evt) {
-    var button = evt.target;
-    while (button && button.tagName.toLowerCase() !== 'button') {
-      button = evt.target.parentNode;
+    var element = evt.target;
+    while (element && element.tagName !== 'BUTTON') {
+      element = element.parentNode;
     }
-    if (!button) {
+    if (!element) {
       return;
     }
-    if (typeof button.dataset.index === 'undefined') {
+    if (typeof element.dataset.index === 'undefined') {
       return;
     }
-    map.insertBefore(window.card.renderCard(window.data.OFFERS[button.dataset.index]), map.children[1]);
+    map.insertBefore(window.card.renderCard(window.data.OFFERS[element.dataset.index]), map.children[1]);
   });
 
   mapPinMain.addEventListener('mousedown', function (evt) {
