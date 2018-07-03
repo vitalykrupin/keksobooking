@@ -3,6 +3,7 @@
 (function () {
   var selects = document.querySelectorAll('select');
   var map = document.querySelector('.map');
+  var fieldset = document.querySelectorAll('fieldset');
   // var mapPinMain = map.querySelector('.map__pin--main');
   // var adForm = document.querySelector('.ad-form');
   // var resetButton = adForm.querySelector('.ad-form__reset');
@@ -14,7 +15,11 @@
       for (var i = 0; i < selects.length; i++) {
         selects[i].disabled = false;
       }
-      document.querySelector('fieldset').disabled = false;
+
+      for (i = 0; i < fieldset.length; i++) {
+        fieldset[i].disabled = false;
+      }
+
       window.setAddressValues();
       window.pin.createFragmentPins(window.data.OFFERS);
       // mapPinMain.removeEventListener('mousedown', window.page.activate);
