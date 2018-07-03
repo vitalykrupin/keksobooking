@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var NUMBER_OF_CARDS = 8;
   var pinProportions = window.constants.PIN_PROPORTIONS;
 
   var makePinButton = function (tagName, className, type, pinX, pinY, index) {
@@ -36,7 +37,7 @@
   window.pin = {
     createFragmentPins: function (arr) {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < arr.length; i++) {
+      for (var i = 0; i < NUMBER_OF_CARDS; i++) {
         fragment.appendChild(renderPin(arr[i], i));
       }
       pinList.appendChild(fragment);
