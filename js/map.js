@@ -71,7 +71,7 @@
         mapPinMain.style.left = coordinates.xMax - pinWidth / 2 + 'px';
       }
 
-      window.setAddressValues();
+      window.form.setAddressValues();
     };
 
     var onMouseUp = function (upEvt) {
@@ -79,7 +79,7 @@
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      // window.setAddressValues();
+      // window.form.setAddressValues();
     };
 
     document.addEventListener('mousemove', onMouseMove);
