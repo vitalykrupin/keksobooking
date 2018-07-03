@@ -6,18 +6,18 @@
   var mapPinMain = map.querySelector('.map__pin--main');
   var inputAddress = document.querySelector('input[name=address]');
 
-  window.setAddressValues = function () {
-    var coordinatePinX = mapPinMain.offsetLeft + pinProportions.mainPinWidth / 2;
-    var coordinatePinY = mapPinMain.offsetTop;
-    if (map.classList.contains('map--faded')) {
-      coordinatePinY += pinProportions.mainPinHeight / 2;
-    } else {
-      coordinatePinY += pinProportions.mainPinHeight + pinProportions.pointerHeight;
-    }
-    inputAddress.value = Math.floor(coordinatePinX) + ', ' + Math.floor(coordinatePinY);
-  };
+  // window.setAddressValues = function () {
+  //   var coordinatePinX = mapPinMain.offsetLeft + pinProportions.mainPinWidth / 2;
+  //   var coordinatePinY = mapPinMain.offsetTop;
+  //   if (map.classList.contains('map--faded')) {
+  //     coordinatePinY += pinProportions.mainPinHeight / 2;
+  //   } else {
+  //     coordinatePinY += pinProportions.mainPinHeight + pinProportions.pointerHeight;
+  //   }
+  //   inputAddress.value = Math.floor(coordinatePinX) + ', ' + Math.floor(coordinatePinY);
+  // };
 
-  window.setAddressValues();
+  // window.setAddressValues();
 
   var adForm = document.querySelector('.ad-form');
   var inputTitle = adForm.querySelector('input[name=title]');
@@ -128,21 +128,52 @@
     changeSelectCapacity();
   });
 
-  var resetAdForm = function () {
-    adForm.reset();
-    window.setAddressValues();
-  };
+  // var resetAdForm = function () {
+  //   adForm.reset();
+  //   window.setAddressValues();
+  // };
 
   adForm.addEventListener('submit', function (evt) {
     window.backend.request('https://js.dump.academy/keksobooking', 'POST', function () {
-      resetAdForm();
+      window.page.deactivate();
+      var success = document.querySelector('.success');
+      success.classList.remove('hidden');
     }, function (response) {
       var errorMassage = document.createElement('div');
       errorMassage.style = 'margin: 0 auto; text-align: center; color: red;';
       errorMassage.style.fontSize = '16px';
       errorMassage.textContent = response + '. Попробуйте отправить форму еще раз.';
       adForm.insertAdjacentElement('beforeend', errorMassage);
+      setTimeout(function () {
+        errorMassage.parentNode.removeChild(errorMassage);
+      }, 3000);
     }, new FormData(adForm));
     evt.preventDefault();
   });
+
+  var adFormReset = adForm.querySelector('.ad-form__reset');
+  adFormReset.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    window.page.deactivate();
+    mapPinMain.addEventListener('mousedown', window.page.activate);
+  });
+
+  window.form = {
+    setAddressValues: function () {
+      var coordinatePinX = mapPinMain.offsetLeft + pinProportions.mainPinWidth / 2;
+      var coordinatePinY = mapPinMain.offsetTop;
+      if (map.classList.contains('map--faded')) {
+        coordinatePinY += pinProportions.mainPinHeight / 2;
+      } else {
+        coordinatePinY += pinProportions.mainPinHeight + pinProportions.pointerHeight;
+      }
+      inputAddress.value = Math.floor(coordinatePinX) + ', ' + Math.floor(coordinatePinY);
+    },
+    resetAdForm: function () {
+      adForm.reset();
+      window.form.setAddressValues();
+    }
+  };
+
+  window.form.setAddressValues();
 })();
