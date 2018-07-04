@@ -1,14 +1,13 @@
 'use strict';
 
 (function () {
-  var NUMBER_OF_CARDS = 8;
   var pinProportions = window.constants.PIN_PROPORTIONS;
-  var mainPin = document.querySelector('.map__pin--main');
-  var startMainPinPosition = mainPin.style.cssText;
+  var mainPinElement = document.querySelector('.map__pin--main');
+  var startMainPinPosition = mainPinElement.style.cssText;
 
   var makePinButton = function (tagName, className, type, pinX, pinY, index) {
     var x = pinX - pinProportions.width / 2;
-    var y = pinY + pinProportions.heading;
+    var y = pinY - pinProportions.height;
     var style = 'left:' + x + 'px; top:' + y + 'px;';
     var element = document.createElement(tagName);
     element.classList.add(className);
@@ -35,27 +34,27 @@
     return pinButton;
   };
 
-  var pinList = document.querySelector('.map__pins');
+  var pinListElement = document.querySelector('.map__pins');
 
   window.pin = {
-    createPins: function (offers) {
+    create: function (offers) {
       var fragment = document.createDocumentFragment();
-
-      offers.slice(0, NUMBER_OF_CARDS).forEach(function (offer) {
+      offers.slice(0, window.constants.NUMBER_OF_CARDS).forEach(function (offer) {
         fragment.appendChild(renderPin(offer));
       });
 
-      pinList.appendChild(fragment);
+      pinListElement.appendChild(fragment);
     },
-    removePins: function () {
-      var mapPins = document.querySelector('.map__pins');
-      var pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      [].forEach.call(pins, function (pin) {
-        mapPins.removeChild(pin);
+    remove: function () {
+      var mapPinsElement = document.querySelector('.map__pins');
+      var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      [].forEach.call(pinElements, function (pin) {
+        mapPinsElement.removeChild(pin);
       });
     },
-    resetMainPin: function () {
-      mainPin.style = startMainPinPosition;
+    reset: function () {
+      mainPinElement.style = startMainPinPosition;
     }
   };
+
 })();

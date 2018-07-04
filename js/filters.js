@@ -6,72 +6,75 @@
     high: 50000
   };
 
-  var mapFilters = document.querySelector('.map__filters');
-  mapFilters.addEventListener('change', function () {
-    window.pin.removePins();
-    window.card.closePopup();
-    window.filters.updatePins(window.data.OFFERS);
-  });
+  var mapFiltersElement = document.querySelector('.map__filters');
+  var selectorFilterElements = mapFiltersElement.querySelectorAll('select');
+  var featuresFilterElements;
+
+  var FilterRules = {
+    'housing-type': 'type',
+    'housing-rooms': 'rooms',
+    'housing-guests': 'guests'
+  };
+
+  var checkSelects = function (offer) {
+    for (var i = 0; i < selectorFilterElements.length; i++) {
+      var selector = selectorFilterElements[i];
+      if (selector.value === 'any') {
+        continue;
+      }
+      if (selector.id === 'housing-price') {
+        if (selector.value === 'middle' && (offer.offer.price < PRICES_TO_COMPARE.low || offer.offer.price >= PRICES_TO_COMPARE.high)) {
+          return false;
+        }
+        if (selector.value === 'low' && offer.offer.price >= PRICES_TO_COMPARE.low) {
+          return false;
+        }
+        if (selector.value === 'high' && offer.offer.price < PRICES_TO_COMPARE.high) {
+          return false;
+        }
+      } else if (offer.offer[FilterRules[selector.id]].toString() !== selector.value) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  var checkFeatures = function (offer) {
+    for (var i = 0; i < featuresFilterElements.length; i++) {
+      var feature = featuresFilterElements[i];
+      if (offer.offer.features.indexOf(feature.value) === -1) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   var updatePins = function (offers) {
-    var filteredOffers = offers.slice();
-    var selectorFilters = mapFilters.querySelectorAll('select');
-    var featuresFilters = mapFilters.querySelectorAll('input[type=checkbox]:checked');
+    featuresFilterElements = mapFiltersElement.querySelectorAll('input[type=checkbox]:checked');
 
-    var FilterRules = {
-      'housing-type': 'type',
-      'housing-rooms': 'rooms',
-      'housing-guests': 'guests'
-    };
-
-    var filterByValue = function (element, property) {
-      return filteredOffers.filter(function (offerData) {
-        return offerData.offer[property].toString() === element.value;
-      });
-    };
-
-    var filterByPrice = function (priceFilter) {
-      return filteredOffers.filter(function (offerData) {
-
-        var priceFilterValues = {
-          'middle': offerData.offer.price >= PRICES_TO_COMPARE.low && offerData.offer.price < PRICES_TO_COMPARE.high,
-          'low': offerData.offer.price < PRICES_TO_COMPARE.low,
-          'high': offerData.offer.price >= PRICES_TO_COMPARE.high
-        };
-        return priceFilterValues[priceFilter.value];
-      });
-    };
-
-    var filterByFeatures = function (item) {
-      return filteredOffers.filter(function (offerData) {
-        return offerData.offer.features.indexOf(item.value) >= 0;
-      });
-    };
-
-    if (selectorFilters.length !== null) {
-      [].forEach.call(selectorFilters, function (item) {
-        if (item.value !== 'any') {
-          if (item.id !== 'housing-price') {
-            filteredOffers = filterByValue(item, FilterRules[item.id]);
-          } else {
-            filteredOffers = filterByPrice(item);
-          }
+    var filteredOffers = [];
+    for (var i = 0; i < offers.length; i++) {
+      if (checkSelects(offers[i]) && checkFeatures(offers[i])) {
+        filteredOffers.push(offers[i]);
+        if (filteredOffers.length >= window.constants.NUMBER_OF_CARDS) {
+          break;
         }
-      });
-    }
-
-    if (featuresFilters !== null) {
-      [].forEach.call(featuresFilters, function (item) {
-        filteredOffers = filterByFeatures(item);
-      });
+      }
     }
 
     if (filteredOffers.length) {
-      window.pin.createPins(filteredOffers);
+      window.pin.create(filteredOffers);
     }
   };
 
-  window.filters = {
-    updatePins: window.util.debounce(updatePins, 500)
+  var onChangeFilters = function () {
+    window.card.close();
+    window.pin.remove();
+    updatePins(window.data.OFFERS);
   };
+
+  window.filters = {
+    onChange: window.utils.debounce(onChangeFilters, 500)
+  };
+
 })();
