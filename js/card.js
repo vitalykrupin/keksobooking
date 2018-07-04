@@ -2,32 +2,38 @@
 
 (function () {
 
-  var similarCardTemplate = document.querySelector('#similar-card-template')
+  var similarCardTemplateElement = document.querySelector('#similar-card-template')
       .content
       .querySelector('.map__card');
 
-  var cardElement = similarCardTemplate.cloneNode(true);
-  var features = cardElement.querySelectorAll('.popup__feature');
-  var containerCardImg = cardElement.querySelector('.popup__photos');
-  var templateImg = containerCardImg.querySelector('.popup__photo').cloneNode(true);
+  var cardElement = similarCardTemplateElement.cloneNode(true);
+  var featuresElement = cardElement.querySelectorAll('.popup__feature');
+  var containerCardImgElement = cardElement.querySelector('.popup__photos');
+  var templateImgElement = containerCardImgElement.querySelector('.popup__photo').cloneNode(true);
 
-  containerCardImg.querySelector('.popup__photo').remove();
+  containerCardImgElement.querySelector('.popup__photo').remove();
 
   var onPopupEscPress = function (evt) {
     window.utils.isEscEvent(evt, closePopup);
   };
 
+  var onPopupEnterPress = function (evt) {
+    window.util.isEnterEvent(evt, closePopup);
+  };
+
   var closePopup = function () {
-    var popup = document.querySelector('.popup');
-    popup.classList.add('hidden');
+    var popupElement = document.querySelector('.popup');
+    popupElement.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
   };
+
+  var popupClose = cardElement.querySelector('.popup__close');
 
   window.card = {
     render: function (arr) {
       cardElement.classList.remove('hidden');
 
-      [].forEach.call(features, function (featureElement) {
+      [].forEach.call(featuresElement, function (featureElement) {
         var classPart = featureElement.classList[1].replace('popup__feature--', '');
         featureElement.style.display = (arr.offer.features.indexOf(classPart) >= 0) ? 'inline-block' : 'none';
       });
@@ -42,18 +48,14 @@
 
       cardElement.querySelector('.popup__description').textContent = arr.offer.description;
 
-      containerCardImg.innerHTML = '';
+      containerCardImgElement.innerHTML = '';
       [].forEach.call(arr.offer.photos, function (photo) {
-        var image = templateImg.cloneNode(true);
+        var image = templateImgElement.cloneNode(true);
         image.src = photo;
-        containerCardImg.appendChild(image);
+        containerCardImgElement.appendChild(image);
       });
 
-      var popupClose = cardElement.querySelector('.popup__close');
-
-      popupClose.addEventListener('click', function () {
-        closePopup();
-      });
+      popupClose.addEventListener('click', closePopup);
       document.addEventListener('keydown', onPopupEscPress);
       popupClose.addEventListener('keydown', function (evt) {
         window.utils.isEnterEvent(evt, closePopup);
@@ -62,11 +64,13 @@
       return cardElement;
     },
     closePopup: function () {
-      var popup = document.querySelector('.popup');
-      if (popup) {
-        popup.classList.add('hidden');
+      var popupElement = document.querySelector('.popup');
+      if (popupElement) {
+        popupElement.classList.add('hidden');
       }
       document.removeEventListener('keydown', onPopupEscPress);
+      popupClose.removeEventListener('keydown', onPopupEnterPress);
+      popupClose.removeEventListener('click', closePopup);
     }
   };
 })();
