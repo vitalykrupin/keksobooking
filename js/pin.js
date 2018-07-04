@@ -3,6 +3,8 @@
 (function () {
   var NUMBER_OF_CARDS = 8;
   var pinProportions = window.constants.PIN_PROPORTIONS;
+  var mainPin = document.querySelector('.map__pin--main');
+  var startMainPinPosition = mainPin.style.cssText;
 
   var makePinButton = function (tagName, className, type, pinX, pinY, index) {
     var x = pinX - pinProportions.width / 2;
@@ -25,24 +27,24 @@
     return element;
   };
 
-  var renderPin = function (arr, i) {
-    var pinButton = makePinButton('button', 'map__pin', 'button', arr.location.x, arr.location.y, i);
-    var pinImg = makeImage(arr.author.avatar, arr.offer.title, pinProportions.imageWidth, pinProportions.imageHeight);
+  var renderPin = function (offer) {
+    var pinButton = makePinButton('button', 'map__pin', 'button', offer.location.x, offer.location.y, offer.index);
+    var pinImg = makeImage(offer.author.avatar, offer.offer.title, pinProportions.imageWidth, pinProportions.imageHeight);
     pinButton.appendChild(pinImg);
-    if (i >= NUMBER_OF_CARDS) {
-      pinButton.style.display = 'none';
-    }
+
     return pinButton;
   };
 
   var pinList = document.querySelector('.map__pins');
 
   window.pin = {
-    createPins: function (arr) {
+    createPins: function (offers) {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < arr.length; i++) {
-        fragment.appendChild(renderPin(arr[i], i));
-      }
+
+      offers.slice(0, NUMBER_OF_CARDS).forEach(function (offer) {
+        fragment.appendChild(renderPin(offer));
+      });
+
       pinList.appendChild(fragment);
     },
     removePins: function () {
@@ -52,10 +54,8 @@
         mapPins.removeChild(pin);
       });
     },
-    returnMainPin: function () {
-      var mainPin = document.querySelector('.map__pin--main');
-      mainPin.style = 'left: 570px; top: 375px;';
-      window.form.setAddressValues();
+    resetMainPin: function () {
+      mainPin.style = startMainPinPosition;
     }
   };
 })();

@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var SHOW_MESSAGE_TIMEOUT = 3000;
   var pinProportions = window.constants.PIN_PROPORTIONS;
   var map = document.querySelector('.map');
   var mapPinMain = map.querySelector('.map__pin--main');
@@ -138,6 +139,9 @@
       window.page.deactivate();
       var success = document.querySelector('.success');
       success.classList.remove('hidden');
+      setTimeout(function () {
+        success.classList.add('hidden');
+      }, SHOW_MESSAGE_TIMEOUT);
     }, function (response) {
       var errorMassage = document.createElement('div');
       errorMassage.style = 'margin: 0 auto; text-align: center; color: red;';
@@ -146,7 +150,7 @@
       adForm.insertAdjacentElement('beforeend', errorMassage);
       setTimeout(function () {
         errorMassage.parentNode.removeChild(errorMassage);
-      }, 3000);
+      }, SHOW_MESSAGE_TIMEOUT);
     }, new FormData(adForm));
     evt.preventDefault();
   });

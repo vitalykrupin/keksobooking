@@ -11,12 +11,12 @@
     activate: function () {
       map.classList.remove('map--faded');
       adForm.classList.remove('ad-form--disabled');
-      for (var i = 0; i < selects.length; i++) {
-        selects[i].disabled = false;
-      }
-      for (i = 0; i < fieldset.length; i++) {
-        fieldset[i].disabled = false;
-      }
+      [].forEach.call(selects, function (item) {
+        item.disabled = false;
+      });
+      [].forEach.call(fieldset, function (item) {
+        item.disabled = false;
+      });
       window.form.setAddressValues();
       // window.pin.createPins(window.data.OFFERS);
       window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
@@ -36,15 +36,15 @@
       adForm.classList.add('ad-form--disabled');
       // map.classList.add('map--faded');
       // document.querySelector('.ad-form').classList.add('ad-form--disabled');
-      for (var i = 0; i < selects.length; i++) {
-        selects[i].disabled = true;
-      }
-      for (i = 0; i < fieldset.length; i++) {
-        fieldset[i].disabled = true;
-      }
+      [].forEach.call(selects, function (item) {
+        item.disabled = true;
+      });
+      [].forEach.call(fieldset, function (item) {
+        item.disabled = true;
+      });
       window.card.closePopup(); // to make this method
       window.pin.removePins();
-      window.pin.returnMainPin();
+      window.pin.resetMainPin();
       map.classList.add('map--faded');
       window.form.setAddressValues();
 
