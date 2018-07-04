@@ -59,7 +59,6 @@
       popupCloseElement.addEventListener('keydown', function (evt) {
         window.utils.isEnterEvent(evt, closePopup);
       });
-
       return cardElement;
     },
     close: function () {
