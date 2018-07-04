@@ -35,7 +35,6 @@
       mapFiltersElement.addEventListener('change', window.filters.onChange);
     },
     deactivate: function () {
-      window.form.reset();
       adFormElement.classList.add('ad-form--disabled');
       setDisabledValue(selectElements, true);
       setDisabledValue(fieldsetElements, true);
@@ -43,8 +42,7 @@
       window.pin.remove();
       window.pin.reset();
       mapElement.classList.add('map--faded');
-      window.form.setAddressValues();
-
+      
       mapPinMainElement.addEventListener('mousedown', window.page.activate);
       mapFiltersElement.removeEventListener('change', window.filters.onChange);
     }
