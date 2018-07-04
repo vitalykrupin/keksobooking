@@ -42,7 +42,7 @@
       window.pin.remove();
       window.pin.reset();
       mapElement.classList.add('map--faded');
-      
+
       mapPinMainElement.addEventListener('mousedown', window.page.activate);
       mapFiltersElement.removeEventListener('change', window.filters.onChange);
     }
