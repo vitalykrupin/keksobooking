@@ -152,11 +152,7 @@
   });
 
   var adFormReset = adForm.querySelector('.ad-form__reset');
-  adFormReset.addEventListener('click', function (evt) {
-    evt.preventDefault();
-    window.page.deactivate();
-    mapPinMain.addEventListener('mousedown', window.page.activate);
-  });
+  adFormReset.addEventListener('click', window.page.deactivate);
 
   window.form = {
     setAddressValues: function () {
