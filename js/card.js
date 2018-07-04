@@ -61,8 +61,12 @@
 
       return cardElement;
     },
-    delete: function () {
-      closePopup();
+    closePopup: function () {
+      var popup = document.querySelector('.popup');
+      if (popup) {
+        popup.classList.add('hidden');
+      }
+      document.removeEventListener('keydown', onPopupEscPress);
     }
   };
 })();

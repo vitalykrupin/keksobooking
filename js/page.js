@@ -42,7 +42,7 @@
       [].forEach.call(fieldset, function (item) {
         item.disabled = true;
       });
-      window.card.closePopup(); // to make this method
+      window.card.closePopup();
       window.pin.removePins();
       window.pin.resetMainPin();
       map.classList.add('map--faded');
