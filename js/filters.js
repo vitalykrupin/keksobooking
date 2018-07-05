@@ -52,7 +52,6 @@
   var updatePins = function (offers) {
     featuresFilterElements = mapFiltersElement.querySelectorAll('input[type=checkbox]:checked');
 
-
     var filteredOffers = [];
     for (var i = 0; i < offers.length; i++) {
       if (checkSelects(offers[i]) && checkFeatures(offers[i])) {
