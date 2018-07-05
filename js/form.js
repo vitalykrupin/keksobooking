@@ -113,6 +113,7 @@
 
   adFormElement.addEventListener('submit', function (evt) {
     window.backend.request('https://js.dump.academy/keksobooking', 'POST', function () {
+      adFormElement.reset();
       onFormReset();
       var successElement = document.querySelector('.success');
       successElement.classList.remove('hidden');
