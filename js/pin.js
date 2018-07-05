@@ -1,12 +1,13 @@
 'use strict';
 
 (function () {
-  var NUMBER_OF_CARDS = 8;
   var pinProportions = window.constants.PIN_PROPORTIONS;
+  var mainPinElement = document.querySelector('.map__pin--main');
+  var startMainPinPosition = mainPinElement.style.cssText;
 
   var makePinButton = function (tagName, className, type, pinX, pinY, index) {
     var x = pinX - pinProportions.width / 2;
-    var y = pinY + pinProportions.heading;
+    var y = pinY - pinProportions.height;
     var style = 'left:' + x + 'px; top:' + y + 'px;';
     var element = document.createElement(tagName);
     element.classList.add(className);
@@ -25,28 +26,35 @@
     return element;
   };
 
-  var renderPin = function (arr, i) {
-    var pinButton = makePinButton('button', 'map__pin', 'button', arr.location.x, arr.location.y, i);
-    var pinImg = makeImage(arr.author.avatar, arr.offer.title, pinProportions.imageWidth, pinProportions.imageHeight);
+  var renderPin = function (offer) {
+    var pinButton = makePinButton('button', 'map__pin', 'button', offer.location.x, offer.location.y, offer.index);
+    var pinImg = makeImage(offer.author.avatar, offer.offer.title, pinProportions.imageWidth, pinProportions.imageHeight);
     pinButton.appendChild(pinImg);
+
     return pinButton;
   };
 
-  var pinList = document.querySelector('.map__pins');
+  var pinListElement = document.querySelector('.map__pins');
 
   window.pin = {
-    createFragmentPins: function (arr) {
+    create: function (offers) {
       var fragment = document.createDocumentFragment();
-      for (var i = 0; i < NUMBER_OF_CARDS; i++) {
-        fragment.appendChild(renderPin(arr[i], i));
-      }
-      pinList.appendChild(fragment);
+      offers.slice(0, window.constants.NUMBER_OF_CARDS).forEach(function (offer) {
+        fragment.appendChild(renderPin(offer));
+      });
+
+      pinListElement.appendChild(fragment);
     },
-    deleteFragmentPins: function () {
-      var pinsArr = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-      for (var i = 0; i < pinsArr.length; i++) {
-        pinsArr[i].remove();
-      }
+    remove: function () {
+      var mapPinsElement = document.querySelector('.map__pins');
+      var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+      [].forEach.call(pinElements, function (pin) {
+        mapPinsElement.removeChild(pin);
+      });
+    },
+    reset: function () {
+      mainPinElement.style = startMainPinPosition;
     }
   };
+
 })();

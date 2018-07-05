@@ -1,102 +1,85 @@
 'use strict';
 
 (function () {
+  var SHOW_MESSAGE_TIMEOUT = 3000;
   var pinProportions = window.constants.PIN_PROPORTIONS;
-  var map = document.querySelector('.map');
-  var mapPinMain = map.querySelector('.map__pin--main');
-  var inputAddress = document.querySelector('input[name=address]');
+  var mapElement = document.querySelector('.map');
+  var mapPinMainElement = mapElement.querySelector('.map__pin--main');
+  var inputAddressElement = document.querySelector('input[name=address]');
+  var adFormElement = document.querySelector('.ad-form');
+  var inputTitleElement = adFormElement.querySelector('input[name=title]');
 
-  window.setAddressValues = function () {
-    var coordinatePinX = mapPinMain.offsetLeft + pinProportions.mainPinWidth / 2;
-    var coordinatePinY = mapPinMain.offsetTop;
-    if (map.classList.contains('map--faded')) {
-      coordinatePinY += pinProportions.mainPinHeight / 2;
+  inputTitleElement.addEventListener('invalid', function () {
+    if (inputTitleElement.validity.tooShort) {
+      inputTitleElement.setCustomValidity('Заголовок должен состоять минимум из 30-ти символов');
+    } else if (inputTitleElement.validity.tooLong) {
+      inputTitleElement.setCustomValidity('Заголовок не должен превышать 100 символов');
+    } else if (inputTitleElement.validity.valueMissing) {
+      inputTitleElement.setCustomValidity('Обязательное поле');
     } else {
-      coordinatePinY += pinProportions.mainPinHeight + pinProportions.pointerHeight;
-    }
-    inputAddress.value = Math.floor(coordinatePinX) + ', ' + Math.floor(coordinatePinY);
-  };
-
-  window.setAddressValues();
-
-  var adForm = document.querySelector('.ad-form');
-  var inputTitle = adForm.querySelector('input[name=title]');
-
-  inputTitle.addEventListener('invalid', function () {
-    if (inputTitle.validity.tooShort) {
-      inputTitle.setCustomValidity('Заголовок должен состоять минимум из 30-ти символов');
-    } else if (inputTitle.validity.tooLong) {
-      inputTitle.setCustomValidity('Заголовок не должен превышать 100 символов');
-    } else if (inputTitle.validity.valueMissing) {
-      inputTitle.setCustomValidity('Обязательное поле');
-    } else {
-      inputTitle.setCustomValidity('');
+      inputTitleElement.setCustomValidity('');
     }
   });
 
   var TITLE_LENGTH_MAX = 30;
-  inputTitle.addEventListener('input', function (evt) {
+  inputTitleElement.addEventListener('input', function (evt) {
     var target = evt.target;
-    if (target.value.length < TITLE_LENGTH_MAX) {
-      target.setCustomValidity('Заголовок должен состоять минимум из 30-ти символов');
-    } else {
-      target.setCustomValidity('');
-    }
+    target.setCustomValidity(target.value.length < TITLE_LENGTH_MAX ? 'Заголовок должен состоять минимум из 30-ти символов' : '');
   });
 
-  var selectType = adForm.querySelector('select[name=type]');
-  var inputPrice = adForm.querySelector('input[name=price]');
+  var selectTypeElement = adFormElement.querySelector('select[name=type]');
+  var inputPriceElement = adFormElement.querySelector('input[name=price]');
   var dictionary = window.constants.DICTIONARY;
 
   var changeInputPrice = function () {
-    inputPrice.setAttribute('min', dictionary[selectType.value].minPrice);
-    inputPrice.placeholder = dictionary[selectType.value].minPrice;
+    inputPriceElement.setAttribute('min', dictionary[selectTypeElement.value].minPrice);
+    inputPriceElement.placeholder = dictionary[selectTypeElement.value].minPrice;
   };
 
-  selectType.addEventListener('change', function () {
+  selectTypeElement.addEventListener('change', function () {
     changeInputPrice();
   });
 
-  inputPrice.addEventListener('invalid', function () {
-    if (inputPrice.validity.rangeOverflow) {
-      inputPrice.setCustomValidity('Цена превышает максимальное значение: ' + inputPrice.max);
-    } else if (inputPrice.validity.rangeUnderflow) {
-      inputPrice.setCustomValidity('Цена ниже минимального значения: ' + inputPrice.min);
-    } else if (inputPrice.validity.valueMissing) {
-      inputPrice.setCustomValidity('Обязательное поле');
+  inputPriceElement.addEventListener('invalid', function () {
+    if (inputPriceElement.validity.rangeOverflow) {
+      inputPriceElement.setCustomValidity('Цена превышает максимальное значение: ' + inputPriceElement.max);
+    } else if (inputPriceElement.validity.rangeUnderflow) {
+      inputPriceElement.setCustomValidity('Цена ниже минимального значения: ' + inputPriceElement.min);
+    } else if (inputPriceElement.validity.valueMissing) {
+      inputPriceElement.setCustomValidity('Обязательное поле');
     } else {
-      inputPrice.setCustomValidity('');
+      inputPriceElement.setCustomValidity('');
     }
   });
 
-  inputPrice.addEventListener('input', function (evt) {
+  inputPriceElement.addEventListener('input', function (evt) {
     var target = evt.target;
-    if (target.value < inputPrice.min) {
-      target.setCustomValidity('Цена ниже минимального значения: ' + inputPrice.min);
-    } else if (target.value > inputPrice.max) {
-      target.setCustomValidity('Цена превышает максимальное значение: ' + inputPrice.max);
+    if (Number(target.value) < inputPriceElement.min) {
+      target.setCustomValidity('Цена ниже минимального значения: ' + inputPriceElement.min);
+    } else if (Number(target.value) > inputPriceElement.max) {
+      target.setCustomValidity('Цена ' + target.value + ' превышает максимальное значение: ' + inputPriceElement.max);
     } else {
       target.setCustomValidity('');
     }
   });
 
-  var selectTimein = adForm.querySelector('select[name=timein]');
-  var selectTimeout = adForm.querySelector('select[name=timeout]');
+  var selectTimeinElement = adFormElement.querySelector('select[name=timein]');
+  var selectTimeoutElement = adFormElement.querySelector('select[name=timeout]');
 
-  var changeSelection = function (arr1, arr2) {
-    arr1.value = arr2.value;
+  var changeSelection = function (select1, select2) {
+    select1.value = select2.value;
   };
 
-  selectTimein.addEventListener('change', function () {
-    changeSelection(selectTimeout, selectTimein);
+  selectTimeinElement.addEventListener('change', function () {
+    changeSelection(selectTimeoutElement, selectTimeinElement);
   });
 
-  selectTimeout.addEventListener('change', function () {
-    changeSelection(selectTimein, selectTimeout);
+  selectTimeoutElement.addEventListener('change', function () {
+    changeSelection(selectTimeinElement, selectTimeoutElement);
   });
 
-  var selectRooms = adForm.querySelector('select[name=rooms]');
-  var selectCapacity = adForm.querySelector('select[name=capacity]');
+  var selectRoomsElement = adFormElement.querySelector('select[name=rooms]');
+  var selectCapacityElement = adFormElement.querySelector('select[name=capacity]');
 
   var roomMap = {
     1: {
@@ -118,31 +101,60 @@
   };
 
   var changeSelectCapacity = function () {
-    roomMap[selectRooms.value].optionStates.forEach(function (item, i) {
-      selectCapacity[i].disabled = item;
+    roomMap[selectRoomsElement.value].optionStates.forEach(function (item, i) {
+      selectCapacityElement[i].disabled = item;
     });
-    selectCapacity[roomMap[selectRooms.value].selectItem].selected = true;
+    selectCapacityElement[roomMap[selectRoomsElement.value].selectItem].selected = true;
   };
 
-  selectRooms.addEventListener('change', function () {
+  selectRoomsElement.addEventListener('change', function () {
     changeSelectCapacity();
   });
 
-  var resetAdForm = function () {
-    adForm.reset();
-    window.setAddressValues();
-  };
-
-  adForm.addEventListener('submit', function (evt) {
+  adFormElement.addEventListener('submit', function (evt) {
     window.backend.request('https://js.dump.academy/keksobooking', 'POST', function () {
-      resetAdForm();
+      onFormReset();
+      var successElement = document.querySelector('.success');
+      successElement.classList.remove('hidden');
+      setTimeout(function () {
+        successElement.classList.add('hidden');
+      }, SHOW_MESSAGE_TIMEOUT);
     }, function (response) {
       var errorMassage = document.createElement('div');
       errorMassage.style = 'margin: 0 auto; text-align: center; color: red;';
       errorMassage.style.fontSize = '16px';
       errorMassage.textContent = response + '. Попробуйте отправить форму еще раз.';
-      adForm.insertAdjacentElement('beforeend', errorMassage);
-    }, new FormData(adForm));
+      adFormElement.insertAdjacentElement('beforeend', errorMassage);
+      setTimeout(function () {
+        errorMassage.parentNode.removeChild(errorMassage);
+      }, SHOW_MESSAGE_TIMEOUT);
+    }, new FormData(adFormElement));
     evt.preventDefault();
   });
+
+  var setAddressValues = function () {
+    var coordinatePinX = mapPinMainElement.offsetLeft + pinProportions.mainPinWidth / 2;
+    var coordinatePinY = mapPinMainElement.offsetTop;
+    coordinatePinY += mapElement.classList.contains('map--faded')
+      ? pinProportions.mainPinHeight / 2
+      : pinProportions.mainPinHeight + pinProportions.pointerHeight;
+    inputAddressElement.value = Math.floor(coordinatePinX) + ', ' + Math.floor(coordinatePinY);
+  };
+
+  var onFormReset = function () {
+    setTimeout(function () {
+      changeSelectCapacity();
+      changeInputPrice();
+      window.page.deactivate();
+      setAddressValues();
+    }, 0);
+  };
+
+  setAddressValues();
+  adFormElement.addEventListener('reset', onFormReset);
+
+  window.form = {
+    setAddressValues: setAddressValues
+  };
+
 })();

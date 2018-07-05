@@ -1,41 +1,51 @@
 'use strict';
 
 (function () {
-  var selects = document.querySelectorAll('select');
-  var map = document.querySelector('.map');
-  var fieldset = document.querySelectorAll('fieldset');
-  // var mapPinMain = map.querySelector('.map__pin--main');
-  // var adForm = document.querySelector('.ad-form');
-  // var resetButton = adForm.querySelector('.ad-form__reset');
+  var selectElements = document.querySelectorAll('select');
+  var fieldsetElements = document.querySelectorAll('fieldset');
+  var mapElement = document.querySelector('.map');
+  var mapFiltersElement = mapElement.querySelector('.map__filters');
+  var mapPinMainElement = mapElement.querySelector('.map__pin--main');
+  var adFormElement = document.querySelector('.ad-form');
+
+  var setDisabledValue = function (element, value) {
+    [].forEach.call(element, function (item) {
+      item.disabled = value;
+    });
+  };
 
   window.page = {
     activate: function () {
-      map.classList.remove('map--faded');
-      document.querySelector('.ad-form').classList.remove('ad-form--disabled');
-      for (var i = 0; i < selects.length; i++) {
-        selects[i].disabled = false;
-      }
+      mapElement.classList.remove('map--faded');
+      adFormElement.classList.remove('ad-form--disabled');
+      setDisabledValue(selectElements, false);
+      setDisabledValue(fieldsetElements, false);
+      window.form.setAddressValues();
+      window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
+        response.forEach(function (offer, index) {
+          offer.index = index;
+        });
+        window.data = {
+          OFFERS: response
+        };
+        window.pin.create(window.data.OFFERS);
+      });
 
-      for (i = 0; i < fieldset.length; i++) {
-        fieldset[i].disabled = false;
-      }
-
-      window.setAddressValues();
-      window.pin.createFragmentPins(window.data.OFFERS);
-      // mapPinMain.removeEventListener('mousedown', window.page.activate);
+      mapPinMainElement.removeEventListener('mousedown', window.page.activate);
+      mapFiltersElement.addEventListener('change', window.filters.onChange);
     },
     deactivate: function () {
-      map.classList.add('map--faded');
-      window.pin.deleteFragmentPins();
-      window.card.deleteCard();
-      document.querySelector('.ad-form').classList.add('ad-form--disabled');
-      for (var i = 0; i < selects.length; i++) {
-        selects[i].disabled = true;
-      }
-      document.querySelector('fieldset').disabled = true;
+      adFormElement.classList.add('ad-form--disabled');
+      setDisabledValue(selectElements, true);
+      setDisabledValue(fieldsetElements, true);
+      window.card.close();
+      window.pin.remove();
+      window.pin.reset();
+      mapElement.classList.add('map--faded');
 
-      // resetButton.removeEventListener('click', window.page.deactivate);
-      // mapPinMain.addEventListener('mousedown', window.page.activate);
+      mapPinMainElement.addEventListener('mousedown', window.page.activate);
+      mapFiltersElement.removeEventListener('change', window.filters.onChange);
     }
   };
+
 })();

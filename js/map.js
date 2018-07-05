@@ -1,21 +1,14 @@
 'use strict';
 
 (function () {
-  var map = document.querySelector('.map');
-  var mapPinMain = map.querySelector('.map__pin--main');
-  // var adForm = document.querySelector('.ad-form');
-  // var resetButton = adForm.querySelector('.ad-form__reset');
+  var mapElement = document.querySelector('.map');
+  var mapPinMainElement = mapElement.querySelector('.map__pin--main');
+  var mapCardElement = mapElement.querySelector('.map__card');
+  var mapPinsElement = mapElement.querySelector('.map__pins');
 
-  // resetButton.addEventListener('click', window.page.deactivate);
-  window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
-    window.data = {
-      OFFERS: response
-    };
-    mapPinMain.addEventListener('mousedown', window.page.activate);
-  });
+  mapPinMainElement.addEventListener('mousedown', window.page.activate);
 
-  var mapPins = map.querySelector('.map__pins');
-  mapPins.addEventListener('click', function (evt) {
+  mapPinsElement.addEventListener('click', function (evt) {
     var element = evt.target;
     while (element && element.tagName !== 'BUTTON') {
       element = element.parentNode;
@@ -26,52 +19,55 @@
     if (typeof element.dataset.index === 'undefined') {
       return;
     }
-    map.insertBefore(window.card.renderCard(window.data.OFFERS[element.dataset.index]), map.children[1]);
+    mapElement.insertBefore(window.card.render(window.data.OFFERS[element.dataset.index]), mapCardElement);
   });
 
-  mapPinMain.addEventListener('mousedown', function (evt) {
+  mapPinMainElement.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
 
-    var startCoords = {
+    var startCoordinates = {
       x: evt.clientX,
       y: evt.clientY
+    };
+
+    var checkBorders = function (shift) {
+      var coordinates = window.constants.LOCATION_COORDINATES;
+      var pinHeight = window.constants.PIN_PROPORTIONS.mainPinHeight;
+      var pinWidth = window.constants.PIN_PROPORTIONS.mainPinWidth;
+      var pointerHeight = window.constants.PIN_PROPORTIONS.pointerHeight;
+
+      if (shift.y < 0 && mapPinMainElement.offsetTop + shift.y + pinHeight + pointerHeight <= coordinates.yMin) {
+        mapPinMainElement.style.top = coordinates.yMin - pinHeight - pointerHeight + 'px';
+      }
+      if (shift.y > 0 && mapPinMainElement.offsetTop + shift.y + pinHeight + pointerHeight >= coordinates.yMax) {
+        mapPinMainElement.style.top = coordinates.yMax - pinHeight - pointerHeight + 'px';
+      }
+      if (shift.x < 0 && mapPinMainElement.offsetLeft + shift.x + pinWidth / 2 <= coordinates.xMin) {
+        mapPinMainElement.style.left = coordinates.xMin - pinWidth / 2 + 'px';
+      }
+      if (shift.x > 0 && mapPinMainElement.offsetLeft + shift.x + pinWidth / 2 >= coordinates.xMax) {
+        mapPinMainElement.style.left = coordinates.xMax - pinWidth / 2 + 'px';
+      }
     };
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
       var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
+        x: moveEvt.clientX - startCoordinates.x,
+        y: moveEvt.clientY - startCoordinates.y
       };
 
-      startCoords = {
+      startCoordinates = {
         x: moveEvt.clientX,
         y: moveEvt.clientY
       };
 
-      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+      mapPinMainElement.style.top = (mapPinMainElement.offsetTop + shift.y) + 'px';
+      mapPinMainElement.style.left = (mapPinMainElement.offsetLeft + shift.x) + 'px';
 
-      var coordinates = window.constants.LOCATION_COORDINATES;
-      var pinHeight = window.constants.PIN_PROPORTIONS.mainPinHeight;
-      var pinWidth = window.constants.PIN_PROPORTIONS.mainPinWidth;
-      var pointerHeight = window.constants.PIN_PROPORTIONS.pointerHeight;
-
-      if (mapPinMain.offsetTop - shift.y < coordinates.yMin - pinHeight - pointerHeight) {
-        mapPinMain.style.top = coordinates.yMin - pinHeight - pointerHeight + 'px';
-      }
-      if (mapPinMain.offsetTop - shift.y > coordinates.yMax + pinHeight / 2 + pointerHeight) {
-        mapPinMain.style.top = coordinates.yMax + pinHeight / 2 + pointerHeight + 'px';
-      }
-      if (mapPinMain.offsetLeft - shift.x < coordinates.xMin - pinWidth / 2) {
-        mapPinMain.style.left = coordinates.xMin - pinWidth / 2 + 'px';
-      }
-      if (mapPinMain.offsetLeft - shift.x > coordinates.xMax - pinWidth / 2) {
-        mapPinMain.style.left = coordinates.xMax - pinWidth / 2 + 'px';
-      }
-
-      window.setAddressValues();
+      checkBorders(shift);
+      window.form.setAddressValues();
     };
 
     var onMouseUp = function (upEvt) {
@@ -79,10 +75,10 @@
 
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
-      // window.setAddressValues();
     };
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
 })();

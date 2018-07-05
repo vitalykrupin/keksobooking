@@ -6,11 +6,11 @@
       xMin: 50,
       xMax: 1150,
       yMin: 130,
-      yMax: 488
+      yMax: 630
     },
     PIN_PROPORTIONS: {
       width: 50,
-      heading: 70,
+      height: 70,
       imageWidth: 40,
       imageHeight: 40,
       mainPinWidth: 65,
@@ -35,6 +35,8 @@
         translate: 'Лачуга',
         minPrice: 0
       }
-    }
+    },
+    NUMBER_OF_CARDS: 5
   };
+
 })();
