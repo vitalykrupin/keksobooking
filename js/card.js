@@ -33,7 +33,7 @@
     render: function (offer) {
       cardElement.classList.remove('hidden');
 
-      [].forEach.call(featuresElement, function (featureElement) {
+      featuresElement.forEach(function (featureElement) {
         var classPart = featureElement.classList[1].replace('popup__feature--', '');
         featureElement.style.display = (offer.offer.features.indexOf(classPart) >= 0) ? 'inline-block' : 'none';
       });
@@ -48,7 +48,7 @@
       cardElement.querySelector('.popup__description').textContent = offer.offer.description;
 
       containerCardImgElement.innerHTML = '';
-      [].forEach.call(offer.offer.photos, function (photo) {
+      offer.offer.photos.forEach(function (photo) {
         var image = templateImgElement.cloneNode(true);
         image.src = photo;
         containerCardImgElement.appendChild(image);
