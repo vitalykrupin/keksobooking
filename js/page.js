@@ -14,6 +14,16 @@
     });
   };
 
+  var formOffers = function (response) {
+    response.forEach(function (offer, index) {
+      offer.index = index;
+    });
+    window.data = {
+      OFFERS: response
+    };
+    window.pin.createByOffers(window.data.OFFERS);
+  };
+
   window.page = {
     onActivatePage: function () {
       window.page.activate();
@@ -24,15 +34,7 @@
       setDisabledValue(selectElements, false);
       setDisabledValue(fieldsetElements, false);
       window.form.setAddressValues();
-      window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
-        response.forEach(function (offer, index) {
-          offer.index = index;
-        });
-        window.data = {
-          OFFERS: response
-        };
-        window.pin.createByOffers(window.data.OFFERS);
-      });
+      window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', formOffers);
 
       mapPinMainElement.addEventListener('mousedown', window.map.onMousedownPin);
       mapPinMainElement.removeEventListener('click', window.page.onActivatePage);
