@@ -14,37 +14,43 @@
     });
   };
 
+  var formOffers = function (response) {
+    response.forEach(function (offer, index) {
+      offer.index = index;
+    });
+    window.data = {
+      OFFERS: response
+    };
+    window.pin.createByOffers(window.data.OFFERS);
+  };
+
   window.page = {
+    onActivatePage: function () {
+      window.page.activate();
+    },
     activate: function () {
       mapElement.classList.remove('map--faded');
       adFormElement.classList.remove('ad-form--disabled');
       setDisabledValue(selectElements, false);
       setDisabledValue(fieldsetElements, false);
       window.form.setAddressValues();
-      window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', function (response) {
-        response.forEach(function (offer, index) {
-          offer.index = index;
-        });
-        window.data = {
-          OFFERS: response
-        };
-        window.pin.create(window.data.OFFERS);
-      });
+      window.backend.request('https://js.dump.academy/keksobooking/data', 'GET', formOffers);
 
-      mapPinMainElement.removeEventListener('mousedown', window.page.activate);
-      mapFiltersElement.addEventListener('change', window.filters.onChange);
+      mapPinMainElement.addEventListener('mousedown', window.map.onMousedownPin);
+      mapPinMainElement.removeEventListener('click', window.page.onActivatePage);
+      mapFiltersElement.addEventListener('change', window.filters.onChangeForm);
     },
     deactivate: function () {
       adFormElement.classList.add('ad-form--disabled');
       setDisabledValue(selectElements, true);
       setDisabledValue(fieldsetElements, true);
       window.card.close();
-      window.pin.remove();
-      window.pin.reset();
+      window.pin.removeAll();
+      window.pin.resetMainPin();
       mapElement.classList.add('map--faded');
 
-      mapPinMainElement.addEventListener('mousedown', window.page.activate);
-      mapFiltersElement.removeEventListener('change', window.filters.onChange);
+      mapPinMainElement.addEventListener('click', window.page.onActivatePage);
+      mapFiltersElement.removeEventListener('change', window.filters.onChangeForm);
     }
   };
 

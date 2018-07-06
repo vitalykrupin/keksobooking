@@ -3,8 +3,8 @@
 (function () {
   window.constants = {
     LOCATION_COORDINATES: {
-      xMin: 50,
-      xMax: 1150,
+      xMin: 0,
+      xMax: 1200,
       yMin: 130,
       yMax: 630
     },

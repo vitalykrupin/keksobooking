@@ -2,6 +2,7 @@
 
 (function () {
   var SHOW_MESSAGE_TIMEOUT = 3000;
+  var TITLE_LENGTH_MAX = 30;
   var pinProportions = window.constants.PIN_PROPORTIONS;
   var mapElement = document.querySelector('.map');
   var mapPinMainElement = mapElement.querySelector('.map__pin--main');
@@ -21,7 +22,6 @@
     }
   });
 
-  var TITLE_LENGTH_MAX = 30;
   inputTitleElement.addEventListener('input', function (evt) {
     var target = evt.target;
     target.setCustomValidity(target.value.length < TITLE_LENGTH_MAX ? 'Заголовок должен состоять минимум из 30-ти символов' : '');
@@ -111,25 +111,42 @@
     changeSelectCapacity();
   });
 
+  var isValidInput = function (input) {
+    if (input.checkValidity() === false) {
+      input.style.boxShadow = '0 0 2px 2px red';
+    } else {
+      input.style.boxShadow = 'none';
+    }
+  };
+
+  adFormElement.querySelector('.ad-form__submit').addEventListener('click', function () {
+    isValidInput(adFormElement.querySelector('#title'));
+    isValidInput(adFormElement.querySelector('#price'));
+  });
+
+  var onLoad = function () {
+    adFormElement.reset();
+    onFormReset();
+    var successElement = document.querySelector('.success');
+    successElement.classList.remove('hidden');
+    setTimeout(function () {
+      successElement.classList.add('hidden');
+    }, SHOW_MESSAGE_TIMEOUT);
+  };
+
+  var onError = function (response) {
+    var errorMassage = document.createElement('div');
+    errorMassage.style = 'margin: 0 auto; text-align: center; color: red;';
+    errorMassage.style.fontSize = '16px';
+    errorMassage.textContent = response + '. Попробуйте отправить форму еще раз.';
+    adFormElement.insertAdjacentElement('beforeend', errorMassage);
+    setTimeout(function () {
+      errorMassage.parentNode.removeChild(errorMassage);
+    }, SHOW_MESSAGE_TIMEOUT);
+  };
+
   adFormElement.addEventListener('submit', function (evt) {
-    window.backend.request('https://js.dump.academy/keksobooking', 'POST', function () {
-      adFormElement.reset();
-      onFormReset();
-      var successElement = document.querySelector('.success');
-      successElement.classList.remove('hidden');
-      setTimeout(function () {
-        successElement.classList.add('hidden');
-      }, SHOW_MESSAGE_TIMEOUT);
-    }, function (response) {
-      var errorMassage = document.createElement('div');
-      errorMassage.style = 'margin: 0 auto; text-align: center; color: red;';
-      errorMassage.style.fontSize = '16px';
-      errorMassage.textContent = response + '. Попробуйте отправить форму еще раз.';
-      adFormElement.insertAdjacentElement('beforeend', errorMassage);
-      setTimeout(function () {
-        errorMassage.parentNode.removeChild(errorMassage);
-      }, SHOW_MESSAGE_TIMEOUT);
-    }, new FormData(adFormElement));
+    window.backend.request('https://js.dump.academy/keksobooking', 'POST', onLoad, onError, new FormData(adFormElement));
     evt.preventDefault();
   });
 
