@@ -34,25 +34,41 @@
     return pinButton;
   };
 
+  var mapElement = document.querySelector('.map');
+  var mapCardElement = mapElement.querySelector('.map__card');
+
+  var onClickPin = function (evt) {
+    var element = evt.target;
+
+    while (element && element.tagName !== 'BUTTON') {
+      element = element.parentNode;
+    }
+
+    mapElement.insertBefore(window.card.render(window.data.OFFERS[element.dataset.index]), mapCardElement);
+  };
+
   var pinListElement = document.querySelector('.map__pins');
 
   window.pin = {
-    create: function (offers) {
+    createByOffers: function (offers) {
       var fragment = document.createDocumentFragment();
       offers.slice(0, window.constants.NUMBER_OF_CARDS).forEach(function (offer) {
-        fragment.appendChild(renderPin(offer));
+        var pinNode = renderPin(offer);
+        pinNode.addEventListener('click', onClickPin);
+
+        fragment.appendChild(pinNode);
       });
 
       pinListElement.appendChild(fragment);
     },
-    remove: function () {
+    removeAll: function () {
       var mapPinsElement = document.querySelector('.map__pins');
       var pinElements = document.querySelectorAll('.map__pin:not(.map__pin--main)');
       [].forEach.call(pinElements, function (pin) {
         mapPinsElement.removeChild(pin);
       });
     },
-    reset: function () {
+    resetMainPin: function () {
       mainPinElement.style = startMainPinPosition;
     }
   };

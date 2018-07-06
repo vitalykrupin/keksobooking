@@ -7,74 +7,114 @@
   };
 
   var mapFiltersElement = document.querySelector('.map__filters');
-  var selectorFilterElements = mapFiltersElement.querySelectorAll('select');
-  var featuresFilterElements;
 
-  var FilterRules = {
-    'housing-type': 'type',
-    'housing-rooms': 'rooms',
-    'housing-guests': 'guests'
+  var filterState = {
+    'housing-type': 'any',
+    'housing-price': 'any',
+    'housing-rooms': 'any',
+    'housing-guests': 'any',
+    'features': []
   };
 
-  var checkSelects = function (offer) {
-    for (var i = 0; i < selectorFilterElements.length; i++) {
-      var selector = selectorFilterElements[i];
-      if (selector.value === 'any') {
-        continue;
+  // кэш ключей для housing
+  var housingFilterKeys = Object.keys(filterState).filter(function (prop) {
+    return prop.indexOf('housing-') === 0;
+  });
+
+  var onChangeForm = function () {
+    var updatedStateFilter = updateFilterState();
+    var filteredOffers = applyFilterAtOffers(updatedStateFilter, window.data.OFFERS.slice());
+
+    window.pin.removeAll();
+    window.pin.createByOffers(filteredOffers);
+  };
+
+  var updateFilterState = function () {
+    filterState.features = []; // reset
+
+    var selectFields = mapFiltersElement.querySelectorAll('select');
+    var featuresInputs = mapFiltersElement.querySelectorAll('input:checked');
+
+    selectFields.forEach(function (node) {
+      var value = node.value;
+
+      // конвертация некоторых типов для состояния фильтра
+      if (['housing-rooms', 'housing-guests'].includes(node.name) && node.value !== 'any') {
+        value = parseInt(value, 10);
       }
-      if (selector.id === 'housing-price') {
-        if (selector.value === 'middle' && (offer.offer.price < PRICES_TO_COMPARE.low || offer.offer.price >= PRICES_TO_COMPARE.high)) {
-          return false;
-        }
-        if (selector.value === 'low' && offer.offer.price >= PRICES_TO_COMPARE.low) {
-          return false;
-        }
-        if (selector.value === 'high' && offer.offer.price < PRICES_TO_COMPARE.high) {
-          return false;
-        }
-      } else if (offer.offer[FilterRules[selector.id]].toString() !== selector.value) {
+
+      filterState[node.name] = value;
+    });
+
+    featuresInputs.forEach(function (node) {
+      filterState.features.push(node.value);
+    });
+
+    return filterState;
+  };
+
+  var applyFilterAtOffers = function (stateFilter, offers) {
+    return offers.filter(function (offer) {
+      // фильтрация по housing-
+      var isOfferMatch = !housingKeysFilter(stateFilter, offer);
+
+      if (isOfferMatch === false) {
         return false;
       }
-    }
-    return true;
+
+      if (filterState.features.length === 0) {
+        return true;
+      }
+
+      // фильтрация по features
+      var hasFeatures = featuresFilter(filterState, offer);
+
+      return hasFeatures;
+    });
   };
 
-  var checkFeatures = function (offer) {
-    for (var i = 0; i < featuresFilterElements.length; i++) {
-      var feature = featuresFilterElements[i];
-      if (offer.offer.features.indexOf(feature.value) === -1) {
+  var housingKeysFilter = function (stateFilter, offer) {
+    return housingFilterKeys.some(function (key) {
+      if (stateFilter[key] === 'any') {
         return false;
       }
-    }
-    return true;
-  };
 
-  var updatePins = function (offers) {
-    featuresFilterElements = mapFiltersElement.querySelectorAll('input[type=checkbox]:checked');
+      var field = key.split('-')[1];
+      var value = stateFilter[key];
 
-    var filteredOffers = [];
-    for (var i = 0; i < offers.length; i++) {
-      if (checkSelects(offers[i]) && checkFeatures(offers[i])) {
-        filteredOffers.push(offers[i]);
-        if (filteredOffers.length >= window.constants.NUMBER_OF_CARDS) {
-          break;
-        }
+      if (key === 'housing-price') {
+        return priceSubFilter(value, offer.offer.price);
       }
-    }
 
-    if (filteredOffers.length) {
-      window.pin.create(filteredOffers);
-    }
+      return offer.offer[field] !== value;
+    });
   };
 
-  var onChangeFilters = function () {
-    window.card.close();
-    window.pin.remove();
-    updatePins(window.data.OFFERS);
+  var featuresFilter = function (stateFilter, offer) {
+    var filteredFeatures = stateFilter.features.filter(function (feature) {
+      return offer.offer.features.indexOf(feature) !== -1;
+    });
+
+    return filteredFeatures.length === stateFilter.features.length;
+  };
+
+  var priceSubFilter = function (filterValue, offerPrice) {
+    if (filterValue === 'middle') {
+      return offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high;
+    }
+
+    if (filterValue === 'low') {
+      return offerPrice >= PRICES_TO_COMPARE.low;
+    }
+
+    if (filterValue === 'high') {
+      return offerPrice < PRICES_TO_COMPARE.high;
+    }
+    return offerPrice;
   };
 
   window.filters = {
-    onChange: window.utils.debounce(onChangeFilters, 500)
+    onChangeForm: window.utils.debounce(onChangeForm, 500)
   };
 
 })();
