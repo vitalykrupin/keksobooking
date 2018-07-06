@@ -5,8 +5,7 @@
   var STATUS_SUCCESS = 200;
 
   window.backend = {
-    request: function (url, type, onLoad, onError, data) {
-      var URL = url;
+    request: function (URL, type, onLoad, onError, data) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
