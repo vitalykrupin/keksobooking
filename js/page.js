@@ -31,23 +31,24 @@
         window.data = {
           OFFERS: response
         };
-        window.pin.create(window.data.OFFERS);
+        window.pin.createByOffers(window.data.OFFERS);
       });
 
+      mapPinMainElement.addEventListener('mousedown', window.map.onMousedownPin);
       mapPinMainElement.removeEventListener('click', window.page.onActivatePage);
-      mapFiltersElement.addEventListener('change', window.filters.onChange);
+      mapFiltersElement.addEventListener('change', window.filters.onChangeForm);
     },
     deactivate: function () {
       adFormElement.classList.add('ad-form--disabled');
       setDisabledValue(selectElements, true);
       setDisabledValue(fieldsetElements, true);
       window.card.close();
-      window.pin.remove();
-      window.pin.mainPinReset();
+      window.pin.removeAll();
+      window.pin.resetMainPin();
       mapElement.classList.add('map--faded');
 
       mapPinMainElement.addEventListener('click', window.page.onActivatePage);
-      mapFiltersElement.removeEventListener('change', window.filters.onChange);
+      mapFiltersElement.removeEventListener('change', window.filters.onChangeForm);
     }
   };
 

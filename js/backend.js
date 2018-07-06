@@ -5,7 +5,7 @@
   var STATUS_SUCCESS = 200;
 
   window.backend = {
-    request: function (URL, type, onLoad, onError, data) {
+    request: function (url, type, onLoad, onError, data) {
       var xhr = new XMLHttpRequest();
       xhr.responseType = 'json';
 
@@ -27,7 +27,7 @@
 
       xhr.timeout = TIMEOUT;
 
-      xhr.open(type, URL);
+      xhr.open(type, url);
       xhr.send(data);
     }
   };
