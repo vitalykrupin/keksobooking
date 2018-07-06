@@ -14,14 +14,14 @@
   containerCardImgElement.querySelector('.popup__photo').remove();
 
   var onPopupEscPress = function (evt) {
-    window.utils.isEscEvent(evt, closePopup);
+    window.utils.isEscEvent(evt, onClickPopupClose);
   };
 
   var onPopupEnterPress = function (evt) {
-    window.utils.isEnterEvent(evt, closePopup);
+    window.utils.isEnterEvent(evt, onClickPopupClose);
   };
 
-  var closePopup = function () {
+  var onClickPopupClose = function () {
     var popupElement = document.querySelector('.popup');
     popupElement.classList.add('hidden');
     document.removeEventListener('keydown', onPopupEscPress);
@@ -54,10 +54,10 @@
         containerCardImgElement.appendChild(image);
       });
 
-      popupCloseElement.addEventListener('click', closePopup);
+      popupCloseElement.addEventListener('click', onClickPopupClose);
       document.addEventListener('keydown', onPopupEscPress);
       popupCloseElement.addEventListener('keydown', function (evt) {
-        window.utils.isEnterEvent(evt, closePopup);
+        window.utils.isEnterEvent(evt, onClickPopupClose);
       });
       return cardElement;
     },
@@ -69,7 +69,7 @@
 
       document.removeEventListener('keydown', onPopupEscPress);
       popupCloseElement.removeEventListener('keydown', onPopupEnterPress);
-      popupCloseElement.removeEventListener('click', closePopup);
+      popupCloseElement.removeEventListener('click', onClickPopupClose);
     }
   };
 })();

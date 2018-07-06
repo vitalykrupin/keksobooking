@@ -2,6 +2,7 @@
 
 (function () {
   var SHOW_MESSAGE_TIMEOUT = 3000;
+  var TITLE_LENGTH_MAX = 30;
   var pinProportions = window.constants.PIN_PROPORTIONS;
   var mapElement = document.querySelector('.map');
   var mapPinMainElement = mapElement.querySelector('.map__pin--main');
@@ -21,7 +22,6 @@
     }
   });
 
-  var TITLE_LENGTH_MAX = 30;
   inputTitleElement.addEventListener('input', function (evt) {
     var target = evt.target;
     target.setCustomValidity(target.value.length < TITLE_LENGTH_MAX ? 'Заголовок должен состоять минимум из 30-ти символов' : '');

@@ -52,7 +52,7 @@
         mapPinsElement.removeChild(pin);
       });
     },
-    reset: function () {
+    mainPinReset: function () {
       mainPinElement.style = startMainPinPosition;
     }
   };

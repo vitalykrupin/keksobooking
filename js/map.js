@@ -6,19 +6,14 @@
   var mapCardElement = mapElement.querySelector('.map__card');
   var mapPinsElement = mapElement.querySelector('.map__pins');
 
-  mapPinMainElement.addEventListener('mousedown', window.page.activate);
+  mapPinMainElement.addEventListener('click', window.page.onActivatePage);
 
   mapPinsElement.addEventListener('click', function (evt) {
     var element = evt.target;
     while (element && element.tagName !== 'BUTTON') {
       element = element.parentNode;
     }
-    if (!element) {
-      return;
-    }
-    if (typeof element.dataset.index === 'undefined') {
-      return;
-    }
+
     mapElement.insertBefore(window.card.render(window.data.OFFERS[element.dataset.index]), mapCardElement);
   });
 

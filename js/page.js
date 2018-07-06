@@ -15,6 +15,9 @@
   };
 
   window.page = {
+    onActivatePage: function () {
+      window.page.activate();
+    },
     activate: function () {
       mapElement.classList.remove('map--faded');
       adFormElement.classList.remove('ad-form--disabled');
@@ -31,7 +34,7 @@
         window.pin.create(window.data.OFFERS);
       });
 
-      mapPinMainElement.removeEventListener('mousedown', window.page.activate);
+      mapPinMainElement.removeEventListener('click', window.page.onActivatePage);
       mapFiltersElement.addEventListener('change', window.filters.onChange);
     },
     deactivate: function () {
@@ -40,10 +43,10 @@
       setDisabledValue(fieldsetElements, true);
       window.card.close();
       window.pin.remove();
-      window.pin.reset();
+      window.pin.mainPinReset();
       mapElement.classList.add('map--faded');
 
-      mapPinMainElement.addEventListener('mousedown', window.page.activate);
+      mapPinMainElement.addEventListener('click', window.page.onActivatePage);
       mapFiltersElement.removeEventListener('change', window.filters.onChange);
     }
   };
