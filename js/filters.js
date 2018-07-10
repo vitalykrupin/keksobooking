@@ -111,6 +111,19 @@
       return offerPrice < PRICES_TO_COMPARE.high;
     }
     return offerPrice;
+    // switch (filterValue) {
+    //   case 'middle':
+    //     return offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high;
+    //     break;
+    //   case 'low':
+    //     return offerPrice >= PRICES_TO_COMPARE.low;
+    //     break;
+    //   case 'high':
+    //     return offerPrice < PRICES_TO_COMPARE.high;
+    //     break;
+    //   default:
+    //     return offerPrice;
+    // }
   };
 
   window.filters = {
