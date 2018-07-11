@@ -83,7 +83,7 @@
       var value = stateFilter[key];
 
       if (key === 'housing-price') {
-        return priceSubFilter(value, offer.offer.price);
+        return priceSubFilterCheck(value, offer.offer.price);
       }
 
       return offer.offer[field] !== value;
@@ -98,19 +98,27 @@
     return filteredFeatures.length === stateFilter.features.length;
   };
 
-  var priceSubFilter = function (filterValue, offerPrice) {
-    if (filterValue === 'middle') {
-      return offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high;
-    }
+  // var priceMap = {
+  //   'middle': offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high,
+  //   'low': offerPrice >= PRICES_TO_COMPARE.low,
+  //   'high': offerPrice < PRICES_TO_COMPARE.high
+  // };
 
-    if (filterValue === 'low') {
-      return offerPrice >= PRICES_TO_COMPARE.low;
-    }
+  // var priceSubFilterCheck = function (filterValue, offerPrice) {
+  //   return priceMap[];
+  // };
 
-    if (filterValue === 'high') {
-      return offerPrice < PRICES_TO_COMPARE.high;
+  var priceSubFilterCheck = function (filterValue, offerPrice) {
+    switch (filterValue) {
+      case 'middle':
+        return offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high;
+      case 'low':
+        return offerPrice >= PRICES_TO_COMPARE.low;
+      case 'high':
+        return offerPrice < PRICES_TO_COMPARE.high;
+      default:
+        return offerPrice;
     }
-    return offerPrice;
   };
 
   window.filters = {
