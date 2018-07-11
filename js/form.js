@@ -119,10 +119,12 @@
     }
   };
 
-  adFormElement.querySelector('.ad-form__submit').addEventListener('click', function () {
+  var onCheckValidityInput = function () {
     isValidInput(adFormElement.querySelector('#title'));
     isValidInput(adFormElement.querySelector('#price'));
-  });
+  };
+
+  adFormElement.querySelector('.ad-form__submit').addEventListener('click', onCheckValidityInput);
 
   var onLoad = function () {
     adFormElement.reset();
@@ -165,6 +167,7 @@
       changeInputPrice();
       window.page.deactivate();
       setAddressValues();
+      onCheckValidityInput();
     }, 0);
   };
 
