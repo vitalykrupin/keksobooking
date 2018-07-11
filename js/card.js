@@ -10,8 +10,6 @@
   var containerCardImgElement = cardElement.querySelector('.popup__photos');
   var templateImgElement = containerCardImgElement.querySelector('.popup__photo').cloneNode(true);
 
-  // containerCardImgElement.querySelector('.popup__photo').remove();
-
   var onPopupEscPress = function (evt) {
     window.utils.isEscEvent(evt, onClickPopupClose);
   };
