@@ -58,11 +58,11 @@
       // фильтрация по housing-
       var isOfferMatch = !housingKeysFilter(stateFilter, offer);
 
-      if (isOfferMatch === false) {
+      if (!isOfferMatch) {
         return false;
       }
 
-      if (filterState.features.length === 0) {
+      if (!filterState.features.length) {
         return true;
       }
 
@@ -98,27 +98,14 @@
     return filteredFeatures.length === stateFilter.features.length;
   };
 
-  // var priceMap = {
-  //   'middle': offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high,
-  //   'low': offerPrice >= PRICES_TO_COMPARE.low,
-  //   'high': offerPrice < PRICES_TO_COMPARE.high
-  // };
-
-  // var priceSubFilterCheck = function (filterValue, offerPrice) {
-  //   return priceMap[];
-  // };
-
   var priceSubFilterCheck = function (filterValue, offerPrice) {
-    switch (filterValue) {
-      case 'middle':
-        return offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high;
-      case 'low':
-        return offerPrice >= PRICES_TO_COMPARE.low;
-      case 'high':
-        return offerPrice < PRICES_TO_COMPARE.high;
-      default:
-        return offerPrice;
-    }
+    var priceMap = {
+      'middle': offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high,
+      'low': offerPrice >= PRICES_TO_COMPARE.low,
+      'high': offerPrice < PRICES_TO_COMPARE.high
+    };
+
+    return priceMap[filterValue];
   };
 
   window.filters = {
