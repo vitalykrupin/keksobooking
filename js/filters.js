@@ -58,11 +58,11 @@
       // фильтрация по housing-
       var isOfferMatch = !housingKeysFilter(stateFilter, offer);
 
-      if (isOfferMatch === false) {
+      if (!isOfferMatch) {
         return false;
       }
 
-      if (filterState.features.length === 0) {
+      if (!filterState.features.length) {
         return true;
       }
 
@@ -83,7 +83,7 @@
       var value = stateFilter[key];
 
       if (key === 'housing-price') {
-        return priceSubFilter(value, offer.offer.price);
+        return priceSubFilterCheck(value, offer.offer.price);
       }
 
       return offer.offer[field] !== value;
@@ -98,19 +98,14 @@
     return filteredFeatures.length === stateFilter.features.length;
   };
 
-  var priceSubFilter = function (filterValue, offerPrice) {
-    if (filterValue === 'middle') {
-      return offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high;
-    }
+  var priceSubFilterCheck = function (filterValue, offerPrice) {
+    var priceMap = {
+      'middle': offerPrice < PRICES_TO_COMPARE.low || offerPrice >= PRICES_TO_COMPARE.high,
+      'low': offerPrice >= PRICES_TO_COMPARE.low,
+      'high': offerPrice < PRICES_TO_COMPARE.high
+    };
 
-    if (filterValue === 'low') {
-      return offerPrice >= PRICES_TO_COMPARE.low;
-    }
-
-    if (filterValue === 'high') {
-      return offerPrice < PRICES_TO_COMPARE.high;
-    }
-    return offerPrice;
+    return priceMap[filterValue];
   };
 
   window.filters = {
