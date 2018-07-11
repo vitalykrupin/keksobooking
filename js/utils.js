@@ -2,8 +2,7 @@
 
 (function () {
   var Keycode = {
-    ESC: 27,
-    ENTER: 13
+    ESC: 27
   };
 
   window.utils = {
