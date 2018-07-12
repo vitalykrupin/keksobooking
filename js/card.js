@@ -39,7 +39,7 @@
     }
   };
 
-  var cardCreate = function (offer) {
+  var createCard = function (offer) {
     cardElement.querySelector('.popup__avatar').src = offer.author.avatar;
     cardElement.querySelector('.popup__title').textContent = offer.offer.title;
     cardElement.querySelector('.popup__text--address').textContent = offer.offer.address;
@@ -53,7 +53,7 @@
   window.card = {
     render: function (offer) {
       cardElement.classList.remove('hidden');
-      cardCreate(offer);
+      createCard(offer);
       featuresAddToCard(offer);
       imageAddToCard(offer);
 
